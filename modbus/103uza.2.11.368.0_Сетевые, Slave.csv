@@ -1,0 +1,16 @@
+﻿VariableName;VariableType;IsRetain;Register;DefaultValue;Comment;ParameterName;MinValue;MaxValue;Visibility;ParameterPath;DisplayFormat;EditableByNetwork;ShouldArchive;MetaType;CatalogPath
+Имя переменной;Тип переменной;Энергонезависимость;Адрес регистра;Значение по умолчанию;Комментарий;Имя параметра;Минимальное значение;Максимальное значение;Видимость;Путь к параметру;Формат отображения данных;Редактирование по сети;Архивировать значение;Метатип;Путь в каталоге
+sel_1;Long;No;16384;0;;sel_1;;;Yes;Logic;Decimal;Yes;No;Network;
+sel_2;Long;No;16385;0;;sel_2;;;Yes;Logic;Decimal;Yes;No;Network;
+sel_3;Long;No;16386;0;;sel_3;;;Yes;Logic;Decimal;Yes;No;Network;
+perms;Long;No;16387;0;;perms;;;Yes;Logic;Decimal;Yes;No;Network;
+pumps;Long;No;16388;0;;pumps;;;Yes;Logic;Decimal;Yes;No;Network;
+uzas;Long;No;16389;0;;uzas;;;Yes;Logic;Decimal;Yes;No;Network;
+alerts;Long;No;16390;0;;alerts;;;Yes;Logic;Decimal;Yes;No;Network;
+selLocks;Long;No;16391;0;;selLocks;;;Yes;Logic;Decimal;Yes;No;Network;
+pressure_1;Float;No;16392;0;;pressure_1;;;Yes;Logic;Decimal;Yes;No;Network;
+pressure_2;Float;No;16394;0;;pressure_2;;;Yes;Logic;Decimal;Yes;No;Network;
+pressure_3;Float;No;16396;0;;pressure_3;;;Yes;Logic;Decimal;Yes;No;Network;
+work_1;Long;No;16398;0;;work_1;;;Yes;Logic;Decimal;Yes;No;Network;
+work_2;Long;No;16399;0;;work_2;;;Yes;Logic;Decimal;Yes;No;Network;
+work_3;Long;No;16400;0;;work_3;;;Yes;Logic;Decimal;Yes;No;Network;
