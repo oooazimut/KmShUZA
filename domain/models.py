@@ -5,6 +5,7 @@ from datetime import datetime
 @dataclass(frozen=True)
 class Pump:
     id: int
+    name: str
     is_working: bool = False
     pressure: float = 0
     runtime_minutes: int = 0
