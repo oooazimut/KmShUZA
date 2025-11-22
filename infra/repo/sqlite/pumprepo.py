@@ -1,39 +1,59 @@
-import json
-from dataclasses import asdict
-from pathlib import Path
 import sqlite3 as sq
-from datetime import date, datetime
+from contextlib import contextmanager
+from datetime import date
+from pathlib import Path
 from typing import Iterable
 
 from domain.models import Pump
 
-
-def adapt_pump(pump: Pump) -> str:
-    data = asdict(pump)
-    data["timestamp"] = data["timestamp"].isoformat()
-    return json.dumps(data)
-
-
-def convert_pump(pump: bytes) -> Pump:
-    data = json.loads(pump)
-    data["timestamp"] = datetime.fromisoformat(data["timestamp"])
-    # del data["id"]
-    return Pump(**data)
+from .mapping import from_row, to_row
 
 
 class SqlitePumpRepo:
-    def _connection(self):
-        pass
+    def __init__(self, db_path: str) -> None:
+        self.db_path = Path(db_path)
+
+    @contextmanager
+    def _transaction(self):
+        conn = sq.connect(
+            self.db_path, detect_types=sq.PARSE_DECLTYPES | sq.PARSE_COLNAMES
+        )
+        conn.row_factory = sq.Row
+        try:
+            yield conn
+            conn.commit()
+        except Exception:
+            conn.rollback()
+            raise
+        finally:
+            conn.close()
 
     def create_db(self, db_name: str, script_name: Path):
         with open(script_name, "r", encoding="utf-8") as file:
             script = file.read()
 
-        with sq.connect(db_name) as con:
-            con.executescript(script)
+        with self._transaction() as conn:
+            conn.executescript(script)
 
-    def save_pumps(self, data: Iterable[Pump]) -> Iterable[int]:
-        return []
+    def save_pumps(self, pumps: Iterable[Pump]) -> Iterable[Pump]:
+        saved_pumps = []
+        query = """INSERT INTO pumps (name, is_working, pressure, runtime_minutes)
+                   VALUES (:name, :is_working, :pressure, :runtime_minutes)
+                   RETURNING *
+                """
+        with self._transaction() as conn:
+            for pump in pumps:
+                saved_pump = conn.execute(query, to_row(pump)).fetchone()
+                saved_pumps.append(from_row(saved_pump))
+        return saved_pumps
 
     def get_pumps_by_date(self, date: date) -> Iterable[Pump | None]:
-        return []
+        query = "SELECT * FROM pumps WHERE DATE(timestamp) = ?"
+        with self._transaction() as conn:
+            result = conn.execute(
+                query,
+                [
+                    date.isoformat(),
+                ],
+            ).fetchall()
+        return [from_row(row) for row in result]
