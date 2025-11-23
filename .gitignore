@@ -207,3 +207,5 @@ marimo/_lsp/
 __marimo__/
 
 tests
+conftest.py
+*.csv
