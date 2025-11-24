@@ -10,6 +10,7 @@ def to_row(pump: Pump) -> Dict:
     result = asdict(pump)
     result["timestamp"] = result["timestamp"].isoformat()
     result["is_working"] = int(result["is_working"])
+    result["emergency_mode"] = int(result["emergency_mode"])
     return result
 
 
@@ -18,7 +19,8 @@ def from_row(row: sq.Row) -> Pump:
         name=str(row["name"]),
         is_working=bool(row["is_working"]),
         pressure=row["pressure"],
-        runtime_minutes=row["runtime_minutes"],
+        runtime=row["runtime"],
         timestamp=datetime.fromisoformat(row["timestamp"]),
+        emergency_mode=bool(row["emergency_mode"]),
         # timestamp=row["timestamp"],
     )

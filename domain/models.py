@@ -7,12 +7,9 @@ class Pump:
     name: str
     is_working: bool = False
     pressure: float = 0
-    runtime_minutes: int = 0
+    runtime: int = 0
     timestamp: datetime = datetime.today()
-
-    @property
-    def runtime_hours(self):
-        return int(self.runtime_minutes / 60)
+    emergency_mode: bool = False
 
     def __eq__(self, other) -> bool:
         if not isinstance(other, Pump):
@@ -25,6 +22,7 @@ class Pump:
 
 @dataclass(frozen=True)
 class Uza:
+    number: int
     is_active: bool
     selector: int
     permission: bool

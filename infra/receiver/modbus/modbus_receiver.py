@@ -1,9 +1,11 @@
 import asyncio
-from typing import Dict, List, Protocol, TypedDict
+from typing import Any, Dict, List, Protocol
+
 from pymodbus.client import AsyncModbusTcpClient
 from pymodbus.exceptions import ModbusException
 
 from domain.models import Pump, Uza
+from infra.receiver.modbus.tools import convert_to_domain_models
 
 
 class ModbusClientProtocol(Protocol):
@@ -50,29 +52,15 @@ class ModbusReceiver:
     def is_connecting(self):
         return self._client.connected
 
-    def _convert_to_bin(self, src: int, quantity: int) -> List[int]:
-        return [int(b) for b in f"{src:0{quantity}b}"[::-1]]
-
     def _convert_to_float(self, words: List[int]) -> List[Any]:
         return [
             self._client.convert_from_registers(
-                words[i : i + 2], data_type=self._client.DATATYPE, word_order="little"
+                words[i : i + 2],
+                data_type=self._client.DATATYPE.FLOAT32,
+                word_order="little",
             )
             for i in range(0, len(words), 2)
         ]
-
-    def _convert_to_domain_models(
-        self, registers: List
-    ) -> Dict[str, List[Pump | Uza | None]]:
-        selectors = registers[:3] + registers[17]
-        permsissions = self._convert_to_bin(registers[3], 4)
-        pump_conditions = self._convert_to_bin(registers[4], 3)
-        uza_conditions = self._convert_to_bin(registers[5], 4)
-        pressures = self._convert_to_float(registers[8:14])
-        pump_runtimes = registers[14:17]
-        result = {"pumps": [], "uzas": []}
-
-        return result
 
     async def receive_data(
         self, address: int, count: int
@@ -86,7 +74,9 @@ class ModbusReceiver:
                 if responce.isError():
                     raise ModbusException(responce)
 
-                return self._convert_data(responce.registers)
+                return convert_to_domain_models(
+                    responce.registers, self._convert_to_float
+                )
 
             except ModbusException:
                 await self._reconnect()

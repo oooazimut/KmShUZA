@@ -34,7 +34,7 @@ class SqlitePumpRepo:
                 await self._conn.execute("BEGIN")
                 yield self._conn
                 await self._conn.commit()
-            except:
+            except Exception:
                 await self._conn.rollback()
                 raise
 
@@ -47,8 +47,8 @@ class SqlitePumpRepo:
 
     async def save_pumps(self, pumps: Iterable[Pump]) -> Iterable[Pump]:
         saved_pumps = []
-        query = """INSERT INTO pumps (name, is_working, pressure, runtime_minutes)
-                   VALUES (:name, :is_working, :pressure, :runtime_minutes)
+        query = """INSERT INTO pumps (name, is_working, pressure, runtime, emergency_mode)
+                   VALUES (:name, :is_working, :pressure, :runtime, :emergency_mode)
                    RETURNING *
                 """
         async with self._transaction() as conn:
