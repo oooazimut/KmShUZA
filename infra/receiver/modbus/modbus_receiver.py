@@ -8,6 +8,15 @@ from domain.models import Pump, Uza
 from infra.receiver.modbus.tools import convert_to_domain_models
 
 
+def cache_data(func):
+    async def wrapper(self, *args, **kwargs):
+        result = await func(self, *args, **kwargs)
+        self._cache = result
+        return result
+
+    return wrapper
+
+
 class ModbusClientProtocol(Protocol):
     connected: bool
 
@@ -23,6 +32,7 @@ class ModbusReceiver:
         self._port = settings.port
         self._client = client or AsyncModbusTcpClient(host=self._host, port=self._port)
         self._lock = asyncio.Lock()
+        self._cache: Dict | None = None
 
     async def _connect(self):
         if self._client.connected:
@@ -62,6 +72,7 @@ class ModbusReceiver:
             for i in range(0, len(words), 2)
         ]
 
+    @cache_data
     async def receive_data(
         self, address: int, count: int
     ) -> Dict[str, List[Pump | Uza | None]]:
@@ -81,3 +92,6 @@ class ModbusReceiver:
             except ModbusException:
                 await self._reconnect()
                 raise
+
+    def get_cache(self):
+        return self._cache

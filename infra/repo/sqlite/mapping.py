@@ -6,7 +6,7 @@ from typing import Dict
 from domain.models import Pump
 
 
-def to_row(pump: Pump) -> Dict:
+def pump_to_row(pump: Pump) -> Dict:
     result = asdict(pump)
     result["timestamp"] = result["timestamp"].isoformat()
     result["is_working"] = int(result["is_working"])
@@ -14,7 +14,7 @@ def to_row(pump: Pump) -> Dict:
     return result
 
 
-def from_row(row: sq.Row) -> Pump:
+def pump_from_row(row: sq.Row) -> Pump:
     return Pump(
         name=str(row["name"]),
         is_working=bool(row["is_working"]),

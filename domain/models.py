@@ -26,3 +26,9 @@ class Uza:
     is_active: bool
     selector: int
     permission: bool
+
+
+@dataclass(frozen=True)
+class User:
+    id: int
+    name: str
