@@ -5,6 +5,7 @@ from pymodbus.client import AsyncModbusTcpClient
 from pymodbus.exceptions import ModbusException
 
 from domain.models import Pump, Uza
+from domain.ports import DataReceiver
 from infra.receiver.modbus.tools import convert_to_domain_models
 
 
@@ -26,7 +27,7 @@ class ModbusClientProtocol(Protocol):
     def convert_from_registers(self, words, data_type, word_order): ...
 
 
-class ModbusReceiver:
+class ModbusReceiver(DataReceiver):
     def __init__(self, settings, client: ModbusClientProtocol | None = None):
         self._host = settings.host
         self._port = settings.port
@@ -73,7 +74,7 @@ class ModbusReceiver:
         ]
 
     @cache_data
-    async def receive_data(
+    async def receive(
         self, address: int, count: int
     ) -> Dict[str, List[Pump | Uza | None]]:
         async with self._lock:

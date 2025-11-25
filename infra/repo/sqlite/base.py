@@ -4,20 +4,26 @@ import asyncio
 from pathlib import Path
 
 
-class BaseRepo:
-    def __init__(self, db_path: Path) -> None:
+class SqliteConnFactory:
+    def __init__(self, db_path) -> None:
         self._db_path = db_path
-        self._conn: sq.Connection | None = None
-        self._lock = asyncio.Lock()
+        self._conn: sq.Connection = None
 
-    async def connect(self):
+    async def __aenter__(self) -> sq.Connection:
         self._conn = await sq.connect(self._db_path)
         self._conn.row_factory = sq.Row
+        return self._conn
 
-    async def close_conn(self):
-        if self._conn is not None:
+    async def __aexit__(self, exc_type, exc, tb):
+        if self._conn:
             await self._conn.close()
             self._conn = None
+
+
+class SqliteBaseRepo:
+    def __init__(self, conn: sq.Connection) -> None:
+        self._conn: sq.Connection = conn
+        self._lock = asyncio.Lock()
 
     @asynccontextmanager
     async def _transaction(self):
@@ -31,11 +37,7 @@ class BaseRepo:
                 raise
 
 
-async def init_db(db_path: Path, script: Path):
-    repo = BaseRepo(db_path=db_path)
-    await repo.connect()
-    try:
-        with open(script, "r", encoding="utf-8") as file:
-            await repo._conn.executescript(file.read())
-    finally:
-        await repo.close_conn()
+async def init_db(db_path: Path, script: Path, conn: sq.Connection):
+    with open(script, "r", encoding="utf-8") as file:
+        await conn.executescript(file.read())
+        await conn.commit()

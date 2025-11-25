@@ -15,16 +15,19 @@ class UseCases:
         self._user_repo = user_repo
 
     async def receive_data(self) -> Iterable:
-        return await self._receiver.receive_data()
-
-    async def get_from_storage_by_date(self, date: date) -> Iterable[Pump | None]:
-        return await self._pump_repo.get_pumps_by_date(date)
-
-    async def save_received_data(self, data: Iterable[Pump]) -> None:
-        await self._pump_repo.save_pumps(data)
-
-    async def save_user(self, user):
-        await self._user_repo.save_user(user)
+        return await self._receiver.receive()
 
     def get_cached_models(self):
         return self._receiver.get_cache()
+
+    async def get_from_storage_by_date(self, date: date) -> Iterable[Pump | None]:
+        return await self._pump_repo.list_by_date(date)
+
+    async def save_received_data(self, data: Iterable[Pump]) -> None:
+        await self._pump_repo.save_list(data)
+
+    async def save_user(self, user):
+        await self._user_repo.add(user)
+
+    async def get_user(self, id: int):
+        await self._user_repo.get(id)

@@ -3,7 +3,7 @@ from dataclasses import asdict
 from datetime import datetime
 from typing import Dict
 
-from domain.models import Pump
+from domain.models import Pump, User
 
 
 def pump_to_row(pump: Pump) -> Dict:
@@ -24,3 +24,11 @@ def pump_from_row(row: sq.Row) -> Pump:
         emergency_mode=bool(row["emergency_mode"]),
         # timestamp=row["timestamp"],
     )
+
+
+def user_to_row(user: User) -> Dict:
+    return asdict(user)
+
+
+def user_from_row(row: sq.Row) -> User:
+    return User(**row)
