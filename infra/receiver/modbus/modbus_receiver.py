@@ -6,16 +6,7 @@ from pymodbus.exceptions import ModbusException
 
 from domain.models import Pump, Uza
 from domain.ports import DataReceiver
-from infra.receiver.modbus.tools import convert_to_domain_models
-
-
-def cache_data(func):
-    async def wrapper(self, *args, **kwargs):
-        result = await func(self, *args, **kwargs)
-        self._cache = result
-        return result
-
-    return wrapper
+from infra.receiver.modbus.tools import cache_data, convert_to_domain_models
 
 
 class ModbusClientProtocol(Protocol):

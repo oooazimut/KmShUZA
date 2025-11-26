@@ -1,12 +1,12 @@
 from datetime import date
-from typing import Iterable, Protocol
+from typing import Dict, Iterable, List, Protocol
 
 from domain.models import Pump, Uza, User
 
 
 class DataReceiver(Protocol):
-    async def receive(self) -> Iterable[Pump | Uza | None]: ...
-    async def get_cache(self) -> Iterable[Pump | Uza | None]: ...
+    async def receive(self) -> Dict[str, List[Pump | Uza]]: ...
+    async def get_cache(self) -> Dict[str, List[Pump | Uza | None]]: ...
 
 
 class PumpRepo(Protocol):
@@ -23,3 +23,8 @@ class UserRepo(Protocol):
     """
 
     async def get(self, id: int) -> User | None: ...
+
+
+class InfoPresenter(Protocol):
+    def present_curr_info(self, data: Dict[str, List]): ...
+    def present_archive_info(self, data: list[Pump]): ...

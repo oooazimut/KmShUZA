@@ -13,9 +13,6 @@ class SqliteUserRepo(SqliteBaseRepo, UserRepo):
             cursor = await conn.execute(query, [id])
             user = await cursor.fetchone()
 
-            if user is None:
-                raise UserNotExists("Такой пользователь не существует")
-
             return user_from_row(user)
 
     async def add(self, user: User):

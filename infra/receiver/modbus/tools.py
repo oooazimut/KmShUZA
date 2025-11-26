@@ -37,8 +37,8 @@ def construct_pumps(
     pressures: List[float],
     runtimes: List[int],
     quantity: int = 3,
-) -> List[Pump | None]:
-    return [
+) -> List[Pump]:
+    pumps = [
         Pump(
             name=str(num + 1),
             is_working=bool(conditions[num]),
@@ -47,6 +47,8 @@ def construct_pumps(
         )
         for num in range(quantity)
     ]
+    pumps.sort(key=lambda x: x.name)
+    return pumps
 
 
 def construct_uzas(
@@ -54,8 +56,8 @@ def construct_uzas(
     selectors: List[int],
     permissions: List[int],
     quantity: int = 4,
-) -> List[Uza | None]:
-    return [
+) -> List[Uza]:
+    uzas = [
         Uza(
             number=num + 1,
             is_active=bool(conditions[num]),
@@ -64,3 +66,14 @@ def construct_uzas(
         )
         for num in range(quantity)
     ]
+    uzas.sort(key=lambda x: x.number)
+    return uzas
+
+
+def cache_data(func):
+    async def wrapper(self, *args, **kwargs):
+        result = await func(self, *args, **kwargs)
+        self._cache = result
+        return result
+
+    return wrapper
