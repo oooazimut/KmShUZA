@@ -1,10 +1,7 @@
-from pathlib import Path
 from aiogram_dialog import DialogManager
 
 from domain.use_cases import UseCases
-
-BASE_DIR = Path(__file__).resolve().parent
-IMAGES_DIR = BASE_DIR / "images"
+from infra.bot.presenter.service import IMAGES_DIR
 
 
 async def curr_info_getter(dialog_manager: DialogManager, **kwargs):
