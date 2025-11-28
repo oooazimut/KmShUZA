@@ -1,6 +1,6 @@
 from functools import lru_cache
 from pathlib import Path
-from typing import Dict, List, Tuple
+from typing import Dict, Iterable, List, Tuple
 
 import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
@@ -33,11 +33,18 @@ class ImageService:
         self._pump_plotter = PumpPlotter()
         self._curr_info_image_path: Path = IMAGES_DIR / "curr_info.png"
         self._trends_path: Path = TRENDS_DIR
+        self._nodata_image_path: Path = IMAGES_DIR / "nodata.png"
 
-    def get_curr_info_img_path(self):
+    @property
+    def curr_info_img_path(self):
         return self._curr_info_image_path
 
-    def get_trends_path(self):
+    @property
+    def nodata_img_path(self):
+        return self._nodata_image_path
+
+    @property
+    def trends_path(self):
         return self._trends_path
 
     def _new_image(self):
@@ -51,7 +58,7 @@ class ImageService:
         self._pump_drawer.draw_pumps_row(pumps, draw)
         bg.save(self._curr_info_image_path)
 
-    def present_archive_info(self, data: List[Pump]):
+    def present_archive_info(self, data: Iterable[Pump]):
         pumps = group_pumps_by_name(data)
         self._pump_plotter.plot_trends(pumps)
 
@@ -153,7 +160,7 @@ class PumpPlotter:
         pressures = [p.pressure for p in pumps]
         plt.plot(times, pressures, label="давление", c=Colors.VALUE)
         date_format = mdates.DateFormatter("%H:%M")
-        ax.xaxis.set_major_locator(mdates.HourLocator(interval=8))
+        ax.xaxis.set_major_locator(mdates.HourLocator(interval=2))
         ax.xaxis.set_major_formatter(date_format)
         plt.legend()
         plt.title(f"Насос: {pumps[0].name}")

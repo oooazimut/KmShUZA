@@ -1,5 +1,7 @@
+from aiogram import Router
 from aiogram.enums import ContentType
-from aiogram_dialog import Dialog, Window
+from aiogram.types import Message
+from aiogram_dialog import Dialog, DialogManager, StartMode, Window
 from aiogram_dialog.widgets.input import TextInput
 from aiogram_dialog.widgets.kbd import (
     Back,
@@ -12,14 +14,29 @@ from aiogram_dialog.widgets.kbd import (
 )
 from aiogram_dialog.widgets.media import StaticMedia
 from aiogram_dialog.widgets.text import Const, Format
+from aiogram.filters import CommandStart
 
-from infra.bot.getters import curr_info_getter
-from infra.bot.handlers import check_passwd, right_passwd, wrong_passwd
+from domain.use_cases import UseCases
+from infra.bot.getters import archive_getter, curr_info_getter
+from infra.bot.handlers import check_passwd, on_date, right_passwd, wrong_passwd
 from infra.bot.states import MainSG
 
 from .custom.babel_calendar import CustomCalendar
 
-main_menu = Dialog(
+start_router = Router()
+
+
+@start_router.message(CommandStart())
+async def starter(msg: Message, dialog_manager: DialogManager):
+    use_cases: UseCases = dialog_manager.middleware_data["use_cases"]
+    user = await use_cases.get_user(msg.from_user.id)
+    await dialog_manager.start(
+        state=MainSG.curr_info if user else MainSG.passw,
+        mode=StartMode.RESET_STACK,
+    )
+
+
+main_dialog = Dialog(
     Window(
         Const("Введите пароль"),
         TextInput(
@@ -39,16 +56,17 @@ main_menu = Dialog(
     ),
     Window(
         Const("Выберите дату"),
-        CustomCalendar(id="calendar"),
+        CustomCalendar(id="calendar", on_click=on_date),
         Back(Const("Назад")),
         state=MainSG.calendar,
     ),
     Window(
-        StaticMedia(),
+        StaticMedia(path=Format("{path}"), type=ContentType.PHOTO),
         StubScroll(id="archive_scroll", pages="pages"),
         Group(NumberedPager(scroll="archive_scroll")),
         Back(Const("К выбору даты")),
         SwitchTo(Const("Гл.страница"), id="switch_to_main", state=MainSG.curr_info),
         state=MainSG.archive,
+        getter=archive_getter,
     ),
 )

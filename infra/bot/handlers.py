@@ -1,9 +1,16 @@
-from aiogram.types import Message
+from datetime import date
+import logging
+from aiogram.types import CallbackQuery, ErrorEvent, Message
 from aiogram_dialog import DialogManager, StartMode
 
 from domain.models import User
 from domain.use_cases import UseCases
+from infra.bot.presenter import create_service
 from infra.bot.states import MainSG
+from config import settings
+
+service = create_service()
+logger = logging.getLogger(__name__)
 
 
 def check_passwd(passwd: str) -> str:
@@ -20,3 +27,21 @@ async def right_passwd(msg: Message, wdgt, manager: DialogManager, *args, **kwar
     use_cases: UseCases = manager.middleware_data["use_cases"]
     await use_cases.save_user(User(id=msg.from_user.id, name=msg.from_user.full_name))
     await manager.start(state=MainSG.curr_info, mode=StartMode.RESET_STACK)
+
+
+async def on_date(event: CallbackQuery, widget, manager: DialogManager, date: date):
+    await manager.find("archive_scroll").set_page(0)
+
+    use_cases: UseCases = manager.middleware_data["use_cases"]
+    pumps = await use_cases.get_from_storage_by_date(date)
+    if not pumps:
+        await event.answer("нет данных за эту дату!", show_alert=True)
+        return
+
+    service.present_archive_info(pumps)
+    await manager.next()
+
+
+async def ui_error_handler(event: ErrorEvent, dialog_manager: DialogManager):
+    logger.warning("Сброс ошибки")
+    await dialog_manager.start(MainSG.curr_info, mode=StartMode.RESET_STACK)

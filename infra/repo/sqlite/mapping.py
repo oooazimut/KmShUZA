@@ -11,6 +11,7 @@ def pump_to_row(pump: Pump) -> Dict:
     result["timestamp"] = result["timestamp"].isoformat()
     result["is_working"] = int(result["is_working"])
     result["emergency_mode"] = int(result["emergency_mode"])
+    result["pressure_alert"] = int(result["pressure_alert"])
     return result
 
 
@@ -22,7 +23,7 @@ def pump_from_row(row: sq.Row) -> Pump:
         runtime=row["runtime"],
         timestamp=datetime.fromisoformat(row["timestamp"]),
         emergency_mode=bool(row["emergency_mode"]),
-        # timestamp=row["timestamp"],
+        pressure_alert=bool(row["pressure_alert"]),
     )
 
 

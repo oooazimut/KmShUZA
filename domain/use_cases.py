@@ -26,11 +26,11 @@ class UseCases:
     async def get_from_storage_by_date(self, date: date) -> Iterable[Pump | None]:
         return await self._pump_repo.list_by_date(date)
 
-    async def save_received_data(self, data: Iterable[Pump]) -> None:
-        await self._pump_repo.save_list(data)
+    async def save_received(self, data: Iterable[Pump]) -> None:
+        return await self._pump_repo.save_list(data)
 
     async def save_user(self, user):
-        await self._user_repo.add(user)
+        return await self._user_repo.add(user)
 
     async def get_user(self, id: int):
-        await self._user_repo.get(id)
+        return await self._user_repo.get(id)

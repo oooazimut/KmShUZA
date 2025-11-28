@@ -11,8 +11,8 @@ from .mapping import pump_from_row, pump_to_row
 class SqlitePumpRepo(SqliteBaseRepo, PumpRepo):
     async def save_list(self, pumps: Iterable[Pump]) -> Iterable[Pump]:
         saved_pumps = []
-        query = """INSERT INTO pumps (name, is_working, pressure, runtime, emergency_mode)
-                   VALUES (:name, :is_working, :pressure, :runtime, :emergency_mode)
+        query = """INSERT INTO pumps (name, is_working, pressure, runtime, emergency_mode, pressure_alert)
+                   VALUES (:name, :is_working, :pressure, :runtime, :emergency_mode, :pressure_alert)
                    RETURNING *
                 """
         async with self._transaction() as conn:

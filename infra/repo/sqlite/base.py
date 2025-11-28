@@ -35,9 +35,3 @@ class SqliteBaseRepo:
             except Exception:
                 await self._conn.rollback()
                 raise
-
-
-async def init_db(db_path: Path, script: Path, conn: sq.Connection):
-    with open(script, "r", encoding="utf-8") as file:
-        await conn.executescript(file.read())
-        await conn.commit()

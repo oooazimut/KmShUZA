@@ -10,6 +10,7 @@ class Pump:
     runtime: int = 0
     timestamp: datetime = datetime.today()
     emergency_mode: bool = False
+    pressure_alert: bool = False
 
     def __eq__(self, other) -> bool:
         if not isinstance(other, Pump):
@@ -26,6 +27,7 @@ class Uza:
     is_active: bool
     selector: int
     permission: bool
+    break_alert: bool
 
 
 @dataclass(frozen=True)
