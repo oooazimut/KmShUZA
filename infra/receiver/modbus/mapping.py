@@ -29,10 +29,13 @@ def determine_pump_values(
 ) -> Dict[str, List]:
     return {
         "name": [str(i + 1) for i in range(q)],
-        "is_working": list(
-            map(lambda x: round(x, 2), (convert_to_bool(registers[4], q)))
+        "is_working": (convert_to_bool(registers[4], q)),
+        "pressure": list(
+            map(
+                lambda x: round(x, 2),
+                to_float_converter(registers[8:14]),
+            )
         ),
-        "pressure": to_float_converter(registers[8:14]),
         "runtime": registers[14:17],
         "emergency_mode": convert_to_bool(registers[18], q),
         "pressure_alert": convert_to_bool(registers[19], q),
