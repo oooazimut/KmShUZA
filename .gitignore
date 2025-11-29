@@ -210,3 +210,4 @@ tests
 conftest.py
 *.csv
 *.png
+*.sqlite
