@@ -162,6 +162,7 @@ class PumpPlotter:
         date_format = mdates.DateFormatter("%H:%M")
         ax.xaxis.set_major_locator(mdates.HourLocator(interval=2))
         ax.xaxis.set_major_formatter(date_format)
+        plt.ylim(top=3)
         plt.legend()
         plt.title(f"Насос: {pumps[0].name}")
         plt.tight_layout()
