@@ -15,9 +15,13 @@ logger = logging.getLogger(__name__)
 
 def cache_data(func):
     async def wrapper(self, *args, **kwargs):
-        result = await func(self, *args, **kwargs)
-        self._cache = result if result else {}
-        return result
+        try:
+            result = await func(self, *args, **kwargs)
+            self._cache = result if isinstance(result, dict) else {}
+            return result
+        except (ModbusException, ConnectionError):
+            self._cache = {}
+            return {}
 
     return wrapper
 
