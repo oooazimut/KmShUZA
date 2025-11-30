@@ -158,7 +158,7 @@ class PumpPlotter:
         ax.set_facecolor(Colors.BG)
         times = [p.timestamp for p in pumps]
         pressures = [p.pressure for p in pumps]
-        plt.plot(times, pressures, label="давление", c=Colors.VALUE)
+        plt.scatter(times, pressures, label="давление", c=Colors.VALUE, s=2)
         date_format = mdates.DateFormatter("%H:%M")
         ax.xaxis.set_major_locator(mdates.HourLocator(interval=2))
         ax.xaxis.set_major_formatter(date_format)
