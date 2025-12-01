@@ -9,8 +9,17 @@ from typing import (
 
 from domain.models import Pump, Uza
 
+def del_first_element(func):
+    def wrapper(*args, **kwargs):
+        result = func(*args, **kwargs)
+        del result[0]
+        return result
+    return wrapper
+       
 
+@del_first_element
 def convert_to_bool(src: int, quantity: int) -> List[bool]:
+    quantity += 1
     return [bool(int(b)) for b in f"{src:0{quantity}b}"[::-1]]
 
 
@@ -20,7 +29,7 @@ def determine_uza_values(registers, q: int = 4) -> Dict[str, List]:
         "selector": registers[:3] + [registers[17]],
         "permission": convert_to_bool(registers[3], q),
         "is_active": convert_to_bool(registers[5], q),
-        "break_alert": convert_to_bool(registers[6], 4),
+        "break_alert": convert_to_bool(registers[6], q),
     }
 
 
