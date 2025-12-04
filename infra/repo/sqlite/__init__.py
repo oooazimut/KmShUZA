@@ -1,5 +1,6 @@
 import logging
 from pathlib import Path
+import sqlite3
 
 import aiosqlite
 from pumprepo import SqlitePumpRepo
@@ -9,10 +10,20 @@ from config import settings
 
 logger = logging.getLogger(__file__)
 
+TIMEOUT = 5
+
 
 async def create_conn() -> aiosqlite.Connection:
-    conn = await aiosqlite.connect(settings.db_path)
+    conn = await aiosqlite.connect(settings.db_path, timeout=3)
     conn.row_factory = aiosqlite.Row
+    await conn.execute("PRAGMA journal_mode=WAL;")
+    return conn
+
+
+def create_sync_conn() -> sqlite3.Connection:
+    conn = sqlite3.connect(settings.db_path, timeout=3)
+    conn.row_factory = sqlite3.Row
+    conn.execute("PRAGMA journal_mode=WAL;")
     return conn
 
 

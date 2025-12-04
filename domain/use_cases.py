@@ -1,5 +1,5 @@
 from datetime import date
-from typing import Dict, Iterable
+from typing import Dict, Iterable, Optional
 
 from domain.models import Pump
 
@@ -9,9 +9,9 @@ from .ports import DataReceiver, PumpRepo, UserRepo
 class UseCases:
     def __init__(
         self,
-        receiver: DataReceiver,
-        pump_repo: PumpRepo,
-        user_repo: UserRepo,
+        receiver: Optional[DataReceiver] = None,
+        pump_repo: Optional[PumpRepo] = None,
+        user_repo: Optional[UserRepo] = None,
     ):
         self._receiver = receiver
         self._pump_repo = pump_repo

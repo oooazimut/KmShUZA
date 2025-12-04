@@ -2,7 +2,7 @@ import asyncio
 import logging
 
 from config import settings
-from domain.use_cases import UseCases
+from domain import UseCases
 from infra.bot import BotService
 from infra.logger import configure_logging
 from infra.receiver.modbus import ModbusReceiver

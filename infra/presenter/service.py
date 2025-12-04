@@ -28,11 +28,11 @@ def get_font(size: int):
 
 
 class ImageService:
-    def __init__(self, curr_path: Path = IMAGES_DIR / "curr_info.png") -> None:
+    def __init__(self, curr_info_path: Path = IMAGES_DIR / "curr_info.png") -> None:
         self._uza_drawer = UzaDrawer()
         self._pump_drawer = PumpDrawer()
         self._pump_plotter = PumpPlotter()
-        self._curr_info_image_path: Path = curr_path
+        self._curr_info_image_path: Path = curr_info_path
         self._trends_path: Path = TRENDS_DIR
         self._nodata_image_path: Path = IMAGES_DIR / "nodata.png"
 

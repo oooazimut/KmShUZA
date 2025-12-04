@@ -7,6 +7,7 @@ from aiogram_dialog import DialogManager, StartMode
 from config import settings
 from domain.models import User
 from domain.use_cases import UseCases
+from infra.presenter import ImageService
 
 from .states import MainSG
 
@@ -33,12 +34,13 @@ async def on_date(event: CallbackQuery, widget, manager: DialogManager, date: da
     await manager.find("archive_scroll").set_page(0)
 
     use_cases: UseCases = manager.middleware_data["use_cases"]
+    presenter: ImageService = manager.dialog_data['presenter']
     pumps = await use_cases.get_from_storage_by_date(date)
     if not pumps:
         await event.answer("нет данных за эту дату!", show_alert=True)
         return
 
-    service.present_archive_info(pumps)
+    presenter.present_archive_info(pumps)
     await manager.next()
 
 
