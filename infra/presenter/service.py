@@ -7,7 +7,8 @@ import matplotlib.pyplot as plt
 from PIL import Image, ImageDraw, ImageFont
 
 from domain.models import Pump, Uza
-from infra.bot.presenter.tools import group_pumps_by_name
+
+from .tools import group_pumps_by_name
 
 BASE_DIR = Path(__file__).resolve().parent
 IMAGES_DIR = BASE_DIR / "images"
@@ -27,11 +28,11 @@ def get_font(size: int):
 
 
 class ImageService:
-    def __init__(self) -> None:
+    def __init__(self, curr_path: Path = IMAGES_DIR / "curr_info.png") -> None:
         self._uza_drawer = UzaDrawer()
         self._pump_drawer = PumpDrawer()
         self._pump_plotter = PumpPlotter()
-        self._curr_info_image_path: Path = IMAGES_DIR / "curr_info.png"
+        self._curr_info_image_path: Path = curr_path
         self._trends_path: Path = TRENDS_DIR
         self._nodata_image_path: Path = IMAGES_DIR / "nodata.png"
 

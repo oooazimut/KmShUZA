@@ -1,9 +1,9 @@
 from aiogram_dialog import DialogManager
 
 from domain.use_cases import UseCases
-from infra.bot.presenter import create_service
+from infra.presenter import ImageService
 
-service = create_service()
+service = ImageService()
 
 
 async def curr_info_getter(dialog_manager: DialogManager, **kwargs):

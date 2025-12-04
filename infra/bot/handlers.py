@@ -1,15 +1,15 @@
-from datetime import date
 import logging
+from datetime import date
+
 from aiogram.types import CallbackQuery, ErrorEvent, Message
 from aiogram_dialog import DialogManager, StartMode
 
+from config import settings
 from domain.models import User
 from domain.use_cases import UseCases
-from infra.bot.presenter import create_service
-from infra.bot.states import MainSG
-from config import settings
 
-service = create_service()
+from .states import MainSG
+
 logger = logging.getLogger(__name__)
 
 

@@ -1,4 +1,5 @@
 import logging
+
 from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 from aiogram.filters import ExceptionTypeFilter
@@ -10,11 +11,12 @@ from redis.asyncio import Redis
 
 from config import settings
 from domain.use_cases import UseCases
-from infra.bot.handlers import ui_error_handler
-from infra.bot.middlewares import UseCasesMiddleWare
+from infra.presenter.service import ImageService
 
 from .custom.media_storage import MediaIdStorage
 from .dialogs import main_dialog, start_router
+from .handlers import ui_error_handler
+from .middlewares import PresenterMiddleWare, UseCasesMiddleWare
 
 logger = logging.getLogger(__name__)
 
@@ -37,6 +39,7 @@ class BotService:
         self._dp.include_routers(start_router, main_dialog)
         setup_dialogs(self._dp, media_id_storage=MediaIdStorage())
         self._dp.update.outer_middleware(UseCasesMiddleWare(use_cases))
+        self._dp.update.outer_middleware(PresenterMiddleWare(ImageService()))
         self._dp.errors.register(
             ui_error_handler, ExceptionTypeFilter(UnknownIntent, OutdatedIntent)
         )

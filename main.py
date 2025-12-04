@@ -1,14 +1,13 @@
 import asyncio
 import logging
+
 from config import settings
 from domain.use_cases import UseCases
-from infra.bot.service import BotService
+from infra.bot import BotService
 from infra.logger import configure_logging
-from infra.receiver.modbus.modbus_receiver import ModbusReceiver
-from infra.repo.sqlite import create_conn, init_db
-from infra.repo.sqlite.pumprepo import SqlitePumpRepo
-from infra.repo.sqlite.user_repo import SqliteUserRepo
-from infra.scheduler.service import SchedulerService
+from infra.receiver.modbus import ModbusReceiver
+from infra.repo.sqlite import SqlitePumpRepo, SqliteUserRepo, create_conn, init_db
+from infra.scheduler import SchedulerService
 
 
 async def main():

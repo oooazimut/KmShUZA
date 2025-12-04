@@ -1,6 +1,10 @@
 import logging
 from pathlib import Path
+
 import aiosqlite
+from pumprepo import SqlitePumpRepo
+from user_repo import SqliteUserRepo
+
 from config import settings
 
 logger = logging.getLogger(__file__)

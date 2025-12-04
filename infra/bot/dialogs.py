@@ -1,27 +1,19 @@
 from aiogram import Router
 from aiogram.enums import ContentType
+from aiogram.filters import CommandStart
 from aiogram.types import Message
 from aiogram_dialog import Dialog, DialogManager, StartMode, Window
+from aiogram_dialog.widgets import kbd
 from aiogram_dialog.widgets.input import TextInput
-from aiogram_dialog.widgets.kbd import (
-    Back,
-    Button,
-    Group,
-    Next,
-    NumberedPager,
-    StubScroll,
-    SwitchTo,
-)
 from aiogram_dialog.widgets.media import StaticMedia
 from aiogram_dialog.widgets.text import Const, Format
-from aiogram.filters import CommandStart
 
 from domain.use_cases import UseCases
-from infra.bot.getters import archive_getter, curr_info_getter
-from infra.bot.handlers import check_passwd, on_date, right_passwd, wrong_passwd
-from infra.bot.states import MainSG
 
+from . import handlers as h
 from .custom.babel_calendar import CustomCalendar
+from .getters import archive_getter, curr_info_getter
+from .states import MainSG
 
 start_router = Router()
 
@@ -41,31 +33,31 @@ main_dialog = Dialog(
         Const("Введите пароль"),
         TextInput(
             id="passwd_input",
-            type_factory=check_passwd,
-            on_success=right_passwd,
-            on_error=wrong_passwd,
+            type_factory=h.check_passwd,
+            on_success=h.right_passwd,
+            on_error=h.wrong_passwd,
         ),
         state=MainSG.passw,
     ),
     Window(
         StaticMedia(path=Format("{path}"), type=ContentType.PHOTO),
-        Button(Const("Обновить"), id="refresh_curr"),
-        Next(Const("Архив")),
+        kbd.Button(Const("Обновить"), id="refresh_curr"),
+        kbd.Next(Const("Архив")),
         state=MainSG.curr_info,
         getter=curr_info_getter,
     ),
     Window(
         Const("Выберите дату"),
-        CustomCalendar(id="calendar", on_click=on_date),
-        Back(Const("Назад")),
+        CustomCalendar(id="calendar", on_click=h.on_date),
+        kbd.Back(Const("Назад")),
         state=MainSG.calendar,
     ),
     Window(
         StaticMedia(path=Format("{path}"), type=ContentType.PHOTO),
-        StubScroll(id="archive_scroll", pages="pages"),
-        Group(NumberedPager(scroll="archive_scroll")),
-        Back(Const("К выбору даты")),
-        SwitchTo(Const("Гл.страница"), id="switch_to_main", state=MainSG.curr_info),
+        kbd.StubScroll(id="archive_scroll", pages="pages"),
+        kbd.Group(kbd.NumberedPager(scroll="archive_scroll")),
+        kbd.Back(Const("К выбору даты")),
+        kbd.SwitchTo(Const("Гл.страница"), id="switch_to_main", state=MainSG.curr_info),
         state=MainSG.archive,
         getter=archive_getter,
     ),
