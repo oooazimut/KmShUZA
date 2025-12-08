@@ -1,9 +1,13 @@
 import asyncio
+import functools
+import json
 import logging
+from datetime import datetime
 from typing import Any, Dict, List, Protocol
 
 from pymodbus.client import AsyncModbusTcpClient
 from pymodbus.exceptions import ModbusException
+from redis.asyncio import Redis
 
 from domain.models import Pump, Uza
 from domain.ports import DataReceiver
@@ -24,6 +28,27 @@ def cache_data(func):
             return {}
 
     return wrapper
+
+
+redis_client = Redis()
+
+
+def cache_to_redis(key: str):
+    def decorator(func):
+        @functools.wraps(func)
+        async def wrapper(*args, **kwargs):
+            try:
+                result = await func(*args, **kwargs)
+
+                payload = result if isinstance(result, dict) else {}
+                await redis_client.set(key, json.dumps(payload))
+                return result
+            except (ModbusException, ConnectionError):
+                await redis_client.delete(key)
+
+        return wrapper
+
+    return decorator
 
 
 class ModbusClientProtocol(Protocol):
@@ -86,7 +111,7 @@ class ModbusReceiver(DataReceiver):
             for i in range(0, len(words), 2)
         ]
 
-    @cache_data
+    @cache_to_redis("modbus:latest")
     async def receive(self) -> Dict[str, List[Pump | Uza | None]]:
         async with self._lock:
             await self._ensure_connection()
