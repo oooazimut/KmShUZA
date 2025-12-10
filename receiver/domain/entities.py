@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime
 
 
@@ -8,7 +8,7 @@ class Pump:
     is_working: bool = False
     pressure: float = 0
     runtime: int = 0
-    timestamp: datetime = datetime.today()
+    timestamp: datetime = field(default_factory=datetime.now)
     emergency_mode: bool = False
     pressure_alert: bool = False
 

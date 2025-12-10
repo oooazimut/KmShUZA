@@ -7,15 +7,17 @@ from typing import (
     TypeVar,
 )
 
-from domain.models import Pump, Uza
+from receiver.domain.entities import Pump, Uza
+
 
 def del_first_element(func):
     def wrapper(*args, **kwargs):
         result = func(*args, **kwargs)
         del result[0]
         return result
+
     return wrapper
-       
+
 
 @del_first_element
 def convert_to_bool(src: int, quantity: int) -> List[bool]:

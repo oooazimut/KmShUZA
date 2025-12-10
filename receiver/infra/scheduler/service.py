@@ -1,7 +1,7 @@
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
-from domain.use_cases import UseCases
-from infra.scheduler.jobs import receive_and_save
+from receiver.domain.use_cases import UseCases
+from .jobs import receive_and_save
 
 
 class SchedulerService:

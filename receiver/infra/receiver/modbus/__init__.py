@@ -1,1 +1,1 @@
-from modbus_receiver import ModbusReceiver
+from .receiver import ModbusReceiver

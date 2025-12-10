@@ -2,32 +2,18 @@ import asyncio
 import functools
 import json
 import logging
-from datetime import datetime
 from typing import Any, Dict, List, Protocol
 
 from pymodbus.client import AsyncModbusTcpClient
 from pymodbus.exceptions import ModbusException
 from redis.asyncio import Redis
 
-from domain.models import Pump, Uza
-from domain.ports import DataReceiver
-from infra.receiver.modbus.mapping import convert_to_domain_models
+from receiver.domain.entities import Pump, Uza
+from receiver.domain.ports import Receiver
+from .mapping import convert_to_domain_models
 
 logging.getLogger("pymodbus").setLevel(logging.ERROR)
 logger = logging.getLogger(__name__)
-
-
-def cache_data(func):
-    async def wrapper(self, *args, **kwargs):
-        try:
-            result = await func(self, *args, **kwargs)
-            self._cache = result if isinstance(result, dict) else {}
-            return result
-        except (ModbusException, ConnectionError):
-            self._cache = {}
-            return {}
-
-    return wrapper
 
 
 redis_client = Redis()
@@ -39,9 +25,7 @@ def cache_to_redis(key: str):
         async def wrapper(*args, **kwargs):
             try:
                 result = await func(*args, **kwargs)
-
-                payload = result if isinstance(result, dict) else {}
-                await redis_client.set(key, json.dumps(payload))
+                await redis_client.set(key, json.dumps(result))
                 return result
             except (ModbusException, ConnectionError):
                 await redis_client.delete(key)
@@ -60,7 +44,7 @@ class ModbusClientProtocol(Protocol):
     def convert_from_registers(self, words, data_type, word_order): ...
 
 
-class ModbusReceiver(DataReceiver):
+class ModbusReceiver(Receiver):
     def __init__(self, settings, client: ModbusClientProtocol | None = None):
         self._host = settings.host
         self._port = settings.port
@@ -68,10 +52,6 @@ class ModbusReceiver(DataReceiver):
         self._count = settings.count
         self._client = client or AsyncModbusTcpClient(host=self._host, port=self._port)
         self._lock = asyncio.Lock()
-        self._cache: Dict = {}
-
-    def get_cache(self):
-        return self._cache
 
     async def _connect(self):
         if self._client.connected:
@@ -111,7 +91,7 @@ class ModbusReceiver(DataReceiver):
             for i in range(0, len(words), 2)
         ]
 
-    @cache_to_redis("modbus:latest")
+    # @cache_to_redis("modbus:latest")
     async def receive(self) -> Dict[str, List[Pump | Uza | None]]:
         async with self._lock:
             await self._ensure_connection()
@@ -129,3 +109,4 @@ class ModbusReceiver(DataReceiver):
             except ModbusException as e:
                 logger.error(e)
                 await self._reconnect()
+                raise
