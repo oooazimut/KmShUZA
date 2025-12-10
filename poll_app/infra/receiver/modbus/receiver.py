@@ -8,27 +8,26 @@ from pymodbus.client import AsyncModbusTcpClient
 from pymodbus.exceptions import ModbusException
 from redis.asyncio import Redis
 
-from receiver.domain.entities import Pump, Uza
-from receiver.domain.ports import Receiver
+from poll_app.domain.entities import Pump, Uza
+from poll_app.domain.ports import Receiver
 from .mapping import convert_to_domain_models
 
 logging.getLogger("pymodbus").setLevel(logging.ERROR)
 logger = logging.getLogger(__name__)
 
 
-redis_client = Redis()
-
-
 def cache_to_redis(key: str):
     def decorator(func):
         @functools.wraps(func)
         async def wrapper(*args, **kwargs):
+            redis = Redis()
             try:
                 result = await func(*args, **kwargs)
-                await redis_client.set(key, json.dumps(result))
+                payload = {k: [item.as_dict() for item in result[k]] for k in result}
+                await redis.set(key, json.dumps(payload))
                 return result
             except (ModbusException, ConnectionError):
-                await redis_client.delete(key)
+                await redis.delete(key)
 
         return wrapper
 
@@ -91,7 +90,7 @@ class ModbusReceiver(Receiver):
             for i in range(0, len(words), 2)
         ]
 
-    # @cache_to_redis("modbus:latest")
+    @cache_to_redis("modbus:latest")
     async def receive(self) -> Dict[str, List[Pump | Uza | None]]:
         async with self._lock:
             await self._ensure_connection()

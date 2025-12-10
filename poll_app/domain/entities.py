@@ -1,4 +1,4 @@
-from dataclasses import dataclass, field
+from dataclasses import asdict, dataclass, field
 from datetime import datetime
 
 
@@ -20,6 +20,11 @@ class Pump:
     def __hash__(self) -> int:
         return hash(self.name)
 
+    def as_dict(self):
+        result = asdict(self)
+        result["timestamp"] = result["timestamp"].isoformat()
+        return result
+
 
 @dataclass(frozen=True)
 class Uza:
@@ -28,3 +33,6 @@ class Uza:
     selector: int
     permission: bool
     break_alert: bool
+
+    def as_dict(self):
+        return asdict(self)

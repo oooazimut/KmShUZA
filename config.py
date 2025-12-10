@@ -21,6 +21,10 @@ class PGSettings(BaseModel):
     bot_passw: SecretStr
     flask_user: str
     flask_passw: SecretStr
+    poller: str
+    poller_passw: SecretStr
+    migrator: str
+    migrator_passw: SecretStr
 
 
 class Settings(BaseSettings):

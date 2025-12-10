@@ -1,0 +1,20 @@
+
+-- table.sql для PostgreSQL
+
+
+CREATE TABLE IF NOT EXISTS pumps (
+    id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL,
+    is_working BOOLEAN DEFAULT FALSE,
+    pressure DOUBLE PRECISION DEFAULT 0,
+    runtime INTEGER DEFAULT 0,
+    timestamp TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    emergency_mode BOOLEAN DEFAULT FALSE,
+    pressure_alert BOOLEAN DEFAULT FALSE
+);
+
+-- CREATE TABLE IF NOT EXISTS users (
+--     id SERIAL PRIMARY KEY,
+--     name TEXT NOT NULL UNIQUE
+-- );
+

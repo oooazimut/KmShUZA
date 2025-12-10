@@ -20,5 +20,4 @@ class UseCases:
     async def receive_and_save(self):
         data = await self.receive_data()
         if data:
-            print(data)
-        #     await self.save_received(data)
+            await self.save_received(data["pumps"])
