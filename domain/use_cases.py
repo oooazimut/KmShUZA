@@ -3,7 +3,7 @@ from typing import Dict, Iterable, Optional
 
 from domain.models import Pump
 
-from .ports import DataReceiver, PumpRepo, UserRepo
+from .ports import CacheService, DataReceiver, PumpRepo, UserRepo
 
 
 class UseCases:
@@ -12,7 +12,7 @@ class UseCases:
         receiver: Optional[DataReceiver] = None,
         pump_repo: Optional[PumpRepo] = None,
         user_repo: Optional[UserRepo] = None,
-    ):
+    :
         self._receiver = receiver
         self._pump_repo = pump_repo
         self._user_repo = user_repo

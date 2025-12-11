@@ -6,7 +6,7 @@ import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
 from PIL import Image, ImageDraw, ImageFont
 
-from domain.models import Pump, Uza
+from domain.entities import Pump, Uza
 
 from .tools import group_pumps_by_name
 

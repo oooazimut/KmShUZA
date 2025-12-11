@@ -2,7 +2,7 @@ from collections import defaultdict
 from typing import Dict
 from typing_extensions import List
 
-from domain.models import Pump
+from domain.entities import Pump
 
 
 def group_pumps_by_name(pumps: List[Pump]) -> Dict[str, List[Pump]]:

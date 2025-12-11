@@ -2,7 +2,7 @@ from typing import Any, Awaitable, Callable, Dict
 from aiogram import BaseMiddleware
 from aiogram.types import TelegramObject
 
-from domain.use_cases import UseCases
+from .domain.use_cases import UseCases
 from infra.presenter.service import ImageService
 
 

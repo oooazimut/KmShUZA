@@ -10,24 +10,24 @@ from aiogram_dialog.api.exceptions import OutdatedIntent, UnknownIntent
 from redis.asyncio import Redis
 
 from config import settings
-from domain.use_cases import UseCases
 from infra.presenter.service import ImageService
 
 from .custom.media_storage import MediaIdStorage
-from .dialogs import main_dialog, start_router
-from .handlers import ui_error_handler
+from .domain.use_cases import UseCases
+from .infra.ui.dialogs import main_dialog, start_router
+from .infra.ui.handlers import ui_error_handler
 from .middlewares import PresenterMiddleWare, UseCasesMiddleWare
 
 logger = logging.getLogger(__name__)
 
 
 class BotService:
-    def __init__(self) -> None:
+    def __init__(self, redis: Redis) -> None:
         self._bot = Bot(
             settings.bot_token.get_secret_value(),
             default=DefaultBotProperties(parse_mode="HTML"),
         )
-        self._redis = Redis(max_connections=20)
+        self._redis = redis
         self._dp = Dispatcher(
             storage=RedisStorage(
                 self._redis,

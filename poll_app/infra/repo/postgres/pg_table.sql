@@ -13,8 +13,9 @@ CREATE TABLE IF NOT EXISTS pumps (
     pressure_alert BOOLEAN DEFAULT FALSE
 );
 
--- CREATE TABLE IF NOT EXISTS users (
---     id SERIAL PRIMARY KEY,
---     name TEXT NOT NULL UNIQUE
--- );
+CREATE TABLE IF NOT EXISTS users (
+    id SERIAL PRIMARY KEY,
+    telegram_id INTEGER UNIQUE,
+    name TEXT NOT NULL UNIQUE
+);
 

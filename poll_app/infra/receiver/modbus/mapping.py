@@ -7,7 +7,7 @@ from typing import (
     TypeVar,
 )
 
-from poll_app.domain.entities import Pump, Uza
+from domain.entities import Pump, Uza
 
 
 def del_first_element(func):

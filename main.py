@@ -21,16 +21,11 @@ async def main():
             SqliteUserRepo(conn),
         )
 
-        scheduler_service = SchedulerService()
-        scheduler_service.configure(use_cases)
-        scheduler_service.run()
-
         bot_service = BotService()
         bot_service.configure(use_cases)
         await bot_service.run()
 
     finally:
-        scheduler_service.stop()
         await conn.close()
 
 

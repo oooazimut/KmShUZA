@@ -8,7 +8,7 @@ from pymodbus.client import AsyncModbusTcpClient
 from pymodbus.exceptions import ModbusException
 from redis.asyncio import Redis
 
-from poll_app.domain.entities import Pump, Uza
+from domain.entities import Pump, Uza
 from poll_app.domain.ports import Receiver
 from .mapping import convert_to_domain_models
 

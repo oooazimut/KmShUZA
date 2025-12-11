@@ -3,7 +3,7 @@ from typing import List
 from psycopg.rows import class_row
 from .base_repo import PGBaseRepo
 from poll_app.domain.ports import PumpRepo
-from poll_app.domain.entities import Pump
+from domain.entities import Pump
 
 
 class PGPumpRepo(PGBaseRepo, PumpRepo):

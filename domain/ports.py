@@ -1,7 +1,7 @@
 from datetime import date
 from typing import Dict, Iterable, List, Protocol
 
-from domain.models import Pump, User, Uza
+from domain.entities import Pump, User, Uza
 
 
 class DataReceiver(Protocol):
@@ -28,3 +28,11 @@ class UserRepo(Protocol):
 class InfoPresenter(Protocol):
     def present_curr_info(self, data: Dict[str, List]): ...
     def present_archive_info(self, data: list[Pump]): ...
+
+
+class CacheSetter(Protocol):
+    async def set(self, data): ...
+
+
+class CacheGetter(Protocol):
+    async def get(self): ...
