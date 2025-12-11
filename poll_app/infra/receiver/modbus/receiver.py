@@ -12,7 +12,6 @@ from poll_app.domain.entities import Pump, Uza
 from poll_app.domain.ports import Receiver
 from .mapping import convert_to_domain_models
 
-logging.getLogger("pymodbus").setLevel(logging.ERROR)
 logger = logging.getLogger(__name__)
 
 
@@ -58,6 +57,7 @@ class ModbusReceiver(Receiver):
         await self._client.connect()
         if not self._client.connected:
             raise ConnectionError("Cannot connect to Modbus Device")
+            logger.error("Connection doesnt exists", ConnectionError)
 
     async def _reconnect(self):
         try:

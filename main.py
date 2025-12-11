@@ -12,7 +12,6 @@ from infra.scheduler import SchedulerService
 
 async def main():
     try:
-        configure_logging(logging.WARNING)
         conn = await create_conn()
         await init_db(conn)
 

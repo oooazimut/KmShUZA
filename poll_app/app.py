@@ -13,6 +13,8 @@ from .infra.receiver.modbus import ModbusReceiver
 async def main():
     pool = create_pool()
     configure_logging()
+    logger = logging.getLogger(__name__)
+    logger.info("start_polling...")
     try:
         await pool.open()
         repo = PGPumpRepo(pool)

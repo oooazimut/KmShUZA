@@ -1,4 +1,3 @@
-from logging.handlers import RotatingFileHandler
 import logging
 import sys
 
@@ -24,8 +23,7 @@ class OnceLogger:
 
 def configure_logging():
     logger = logging.getLogger()
-    logger.setLevel(logging.DEBUG)
-    logger.handlers.clear()
+    logger.setLevel(logging.INFO)
 
     formatter = logging.Formatter("%(asctime)s %(levelname)s %(name)s %(message)s")
 
@@ -33,17 +31,12 @@ def configure_logging():
     stream.setFormatter(formatter)
     logger.addHandler(stream)
 
-    debugger = RotatingFileHandler("logs/poller.debug")
-    debugger.setLevel(logging.DEBUG)
-    debugger.setFormatter(formatter)
-    logger.addHandler(debugger)
-
-    info_handler = RotatingFileHandler("logs/poller.log")
+    info_handler = logging.FileHandler("logs/poller.log")
     info_handler.setLevel(logging.INFO)
     info_handler.setFormatter(formatter)
     logger.addHandler(info_handler)
 
-    error_handler = RotatingFileHandler("logs/poller.err")
+    error_handler = logging.FileHandler("logs/poller.err")
     error_handler.setLevel(logging.WARNING)
     error_handler.setFormatter(formatter)
     logger.addHandler(error_handler)

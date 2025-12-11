@@ -1,5 +1,9 @@
 from typing import Dict, List, Optional
+
+from logger import OnceLogger
 from .ports import PumpRepo, Receiver
+
+once_logger = OnceLogger()
 
 
 class UseCases:
@@ -17,6 +21,7 @@ class UseCases:
     async def save_received(self, data):
         return await self._pump_repo.add_list(data)
 
+    @once_logger.log_exceptions_for_once
     async def receive_and_save(self):
         data = await self.receive_data()
         if data:
