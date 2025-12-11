@@ -1,3 +1,4 @@
+from logging.handlers import RotatingFileHandler
 import logging
 import sys
 
@@ -31,12 +32,20 @@ def configure_logging():
     stream.setFormatter(formatter)
     logger.addHandler(stream)
 
-    info_handler = logging.FileHandler("logs/poller.log")
+    info_handler = RotatingFileHandler(
+        "logs/poller.log",
+        maxBytes=50_000_000,
+        backupCount=5,
+    )
     info_handler.setLevel(logging.INFO)
     info_handler.setFormatter(formatter)
     logger.addHandler(info_handler)
 
-    error_handler = logging.FileHandler("logs/poller.err")
+    error_handler = RotatingFileHandler(
+        "logs/poller.err",
+        maxBytes=50_000_000,
+        backupCount=5,
+    )
     error_handler.setLevel(logging.WARNING)
     error_handler.setFormatter(formatter)
     logger.addHandler(error_handler)

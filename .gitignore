@@ -211,3 +211,4 @@ conftest.py
 *.csv
 *.png
 *.sqlite
+logs/
