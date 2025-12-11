@@ -106,6 +106,6 @@ class ModbusReceiver(Receiver):
                 )
 
             except ModbusException as e:
-                logger.error(e)
+                logger.error("Modbus Protocol Error!", e)
                 await self._reconnect()
                 raise

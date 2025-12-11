@@ -1,0 +1,22 @@
+[Unit]
+Description=Каменск-Шахтинск, УЗА, modbus-ресивер
+After=network.target
+
+[Service]
+Type=simple
+User=azimut
+Group=azimut
+
+WorkingDirectory=/home/azimut/Bots/KmShUZA
+ExecStart=/home/azimut/Bots/KmShUZA/.venv/bin/python -m poll_app.app
+
+Restart=always
+RestartSec=5
+
+Environment="PYTHONUNBUFFERED=1"
+
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
