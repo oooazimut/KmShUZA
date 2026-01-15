@@ -3,7 +3,7 @@ from dataclasses import asdict
 from datetime import datetime
 from typing import Dict
 
-from domain.entities import Pump, User
+from domain.entities import Pump
 
 
 def pump_to_row(pump: Pump) -> Dict:
@@ -25,13 +25,3 @@ def pump_from_row(row: sq.Row) -> Pump:
         emergency_mode=bool(row["emergency_mode"]),
         pressure_alert=bool(row["pressure_alert"]),
     )
-
-
-def user_to_row(user: User) -> Dict:
-    return asdict(user)
-
-
-def user_from_row(row: sq.Row) -> User:
-    data = dict(row)
-    del data["id"]
-    return User(**data)

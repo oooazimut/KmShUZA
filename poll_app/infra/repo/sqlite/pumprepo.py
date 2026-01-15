@@ -1,11 +1,10 @@
-from datetime import date
 from typing import Iterable
 
 from domain.entities import Pump
 from domain.ports import PumpRepo
+from infra.repo.mapping import pump_from_row, pump_to_row
 
 from .base import SqliteBaseRepo
-from infra.repo.mapping import pump_from_row, pump_to_row
 
 
 class SqlitePumpRepo(SqliteBaseRepo, PumpRepo):
@@ -21,11 +20,3 @@ class SqlitePumpRepo(SqliteBaseRepo, PumpRepo):
                 saved_pumps.append(pump_from_row(await cursor.fetchone()))
 
         return saved_pumps
-
-    async def list_by_date(self, date: date) -> Iterable[Pump | None]:
-        query = "SELECT * FROM pumps WHERE DATE(timestamp) = ?"
-        async with self._transaction() as conn:
-            cursor = await conn.execute(query, [date.isoformat()])
-            rows = await cursor.fetchall()
-
-        return [pump_from_row(row) for row in rows]

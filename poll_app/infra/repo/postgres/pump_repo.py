@@ -1,4 +1,3 @@
-from datetime import date, timedelta
 from typing import List
 
 from psycopg.rows import class_row
@@ -26,11 +25,3 @@ class PGPumpRepo(PGBaseRepo, PumpRepo):
             pumps.append(await self._fetchone(query, pump.as_dict()))
 
         return pumps
-
-    async def list_by_date(self, target_date: date):
-        end = target_date + timedelta(days=1)
-        stmt = """
-        SELECT name, is_working, pressure, runtime, timestamp, emergency_mode, pressure_alert
-        FROM pumps
-        WHERE timestamp >= %s AND timestamp < %s;"""
-        return await self._fetchall(stmt, (target_date, end))

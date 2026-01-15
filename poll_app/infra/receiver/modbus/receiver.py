@@ -9,7 +9,7 @@ from pymodbus.exceptions import ModbusException
 from redis.asyncio import Redis
 
 from domain.entities import Pump, Uza
-from poll_app.domain.ports import Receiver
+from domain.ports import Receiver
 from .mapping import convert_to_domain_models
 
 logger = logging.getLogger(__name__)
@@ -58,8 +58,8 @@ class ModbusReceiver(Receiver):
             return
         await self._client.connect()
         if not self._client.connected:
+            logger.error("Connection doesnt exists, ConnectionError")
             raise ConnectionError("Cannot connect to Modbus Device")
-            logger.error("Connection doesnt exists", ConnectionError)
 
     async def _reconnect(self):
         try:

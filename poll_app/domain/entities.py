@@ -1,6 +1,5 @@
 from dataclasses import asdict, dataclass, field
 from datetime import datetime
-from werkzeug.security import generate_password_hash, check_password_hash
 
 
 @dataclass(frozen=True)
@@ -37,16 +36,3 @@ class Uza:
 
     def as_dict(self):
         return asdict(self)
-
-
-@dataclass()
-class User:
-    name: str
-    password: str = ""
-    telegram_id: int | None = None
-
-    def set_password(self, passwd):
-        self.password = generate_password_hash(passwd)
-
-    def check_password(self, passwd):
-        return check_password_hash(self.password, passwd)

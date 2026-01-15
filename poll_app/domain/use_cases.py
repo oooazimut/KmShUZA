@@ -1,8 +1,6 @@
-from typing import Dict, List, Optional
+from ports import PumpRepo, Receiver
 
 from logger import OnceLogger
-from .ports import Receiver
-from domain.ports import PumpRepo
 
 once_logger = OnceLogger()
 
@@ -12,14 +10,8 @@ class UseCases:
         self._receiver = receiver
         self._pump_repo = pump_repo
 
-    async def receive_data(self) -> Dict[str, List]:
-        return await self._receiver.receive()
-
-    async def save_received(self, data):
-        return await self._pump_repo.add_list(data)
-
     @once_logger.log_exceptions_for_once
     async def receive_and_save(self):
-        data = await self.receive_data()
+        data = await self._receiver.receive()
         if data:
-            await self.save_received(data["pumps"])
+            await self._pump_repo.add_list(data["pumps"])
