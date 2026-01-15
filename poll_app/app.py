@@ -1,18 +1,21 @@
 import asyncio
 import logging
 
-from logger import configure_logging
 from config import settings
-from poll_app.infra.repo.postgres.pool import create_pool
-from poll_app.infra.repo.postgres.pump_repo import PGPumpRepo
+from infra.repo.postgres.pool import create_pool
+from infra.repo.postgres.pump_repo import PGPumpRepo
+from logger import configure_logging
 
 from .domain.use_cases import UseCases
 from .infra.receiver.modbus import ModbusReceiver
 
 
 async def main():
-    pool = create_pool()
-    configure_logging()
+    pool = create_pool(
+        user=settings.pg.poller,
+        password=settings.pg.poller_passw.get_secret_value(),
+    )
+    configure_logging("poller")
     logger = logging.getLogger(__name__)
     logger.info("start_polling...")
     try:

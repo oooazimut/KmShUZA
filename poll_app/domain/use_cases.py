@@ -1,17 +1,14 @@
 from typing import Dict, List, Optional
 
 from logger import OnceLogger
-from .ports import PumpRepo, Receiver
+from .ports import Receiver
+from domain.ports import PumpRepo
 
 once_logger = OnceLogger()
 
 
 class UseCases:
-    def __init__(
-        self,
-        receiver: Receiver,
-        pump_repo: Optional[PumpRepo] = None,
-    ) -> None:
+    def __init__(self, receiver: Receiver, pump_repo: PumpRepo) -> None:
         self._receiver = receiver
         self._pump_repo = pump_repo
 

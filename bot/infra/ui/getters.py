@@ -9,6 +9,7 @@ async def curr_info_getter(dialog_manager: DialogManager, **kwargs):
     use_cases: UseCases = dialog_manager.middleware_data["use_cases"]
     presenter: ImageService = dialog_manager.middleware_data["presenter"]
     data = await use_cases.get_cache()
+
     if data:
         presenter.present_curr_info(pumps=data["pumps"], uzas=data["uzas"])
         img_path = presenter.curr_info_img_path

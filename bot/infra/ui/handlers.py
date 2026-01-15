@@ -4,7 +4,7 @@ from datetime import date
 from aiogram.types import CallbackQuery, ErrorEvent, Message
 from aiogram_dialog import DialogManager, StartMode
 
-from bot.domain.entities import TgUser
+from domain.entities import User
 from bot.domain.use_cases import UseCases
 from config import settings
 from infra.presenter import ImageService
@@ -27,7 +27,7 @@ async def wrong_passwd(msg: Message, *args, **kwargs):
 async def right_passwd(msg: Message, wdgt, manager: DialogManager, *args, **kwargs):
     use_cases: UseCases = manager.middleware_data["use_cases"]
     await use_cases.save_user(
-        TgUser(telegram_id=msg.from_user.id, name=msg.from_user.full_name)
+        User(telegram_id=msg.from_user.id, name=msg.from_user.full_name)
     )
     await manager.start(state=MainSG.curr_info, mode=StartMode.RESET_STACK)
 
@@ -36,8 +36,8 @@ async def on_date(event: CallbackQuery, widget, manager: DialogManager, date: da
     await manager.find("archive_scroll").set_page(0)
 
     use_cases: UseCases = manager.middleware_data["use_cases"]
-    presenter: ImageService = manager.dialog_data["presenter"]
-    pumps = await use_cases.get_from_storage_by_date(date)
+    presenter: ImageService = manager.middleware_data["presenter"]
+    pumps = await use_cases.get_pumps_from_storage_by_date(date)
     if not pumps:
         await event.answer("нет данных за эту дату!", show_alert=True)
         return

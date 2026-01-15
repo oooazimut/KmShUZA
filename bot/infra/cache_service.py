@@ -1,7 +1,7 @@
 import json
 from redis.asyncio import Redis
 
-from domain.entities import Pump
+from domain.entities import Pump, Uza
 from domain.ports import CacheGetter
 
 
@@ -13,4 +13,8 @@ class RedisCashe(CacheGetter):
         if (raw := await self._redis.get("modbus:latest")) is None:
             return None
 
-        return [Pump(**item) for item in json.loads(raw)]
+        raw = json.loads(raw)
+        return {
+            "pumps": [Pump(**item) for item in raw["pumps"]],
+            "uzas": [Uza(**item) for item in raw["uzas"]],
+        }

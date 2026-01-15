@@ -13,16 +13,18 @@ from poll_app.domain.ports import Receiver
 from .mapping import convert_to_domain_models
 
 logger = logging.getLogger(__name__)
+redis = Redis()
 
 
 def cache_to_redis(key: str):
     def decorator(func):
         @functools.wraps(func)
         async def wrapper(*args, **kwargs):
-            redis = Redis()
             try:
-                result = await func(*args, **kwargs)
-                payload = {k: [item.as_dict() for item in result[k]] for k in result}
+                result: dict = await func(*args, **kwargs)
+                payload = {
+                    key: [item.as_dict() for item in seq] for key, seq in result.items()
+                }
                 await redis.set(key, json.dumps(payload))
                 return result
             except (ModbusException, ConnectionError):
