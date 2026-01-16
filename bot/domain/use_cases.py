@@ -1,6 +1,6 @@
 from datetime import date
 from typing import List
-from bot.infra.cache_service import RedisCashe
+from infra.cache_service import RedisCashe
 from domain.entities import Pump, User
 from redis.asyncio import Redis
 from domain.ports import CacheGetter, PumpRepo, UserRepo

@@ -12,11 +12,11 @@ from redis.asyncio import Redis
 from config import settings
 from infra.presenter.service import ImageService
 
-from .custom.media_storage import MediaIdStorage
-from .domain.use_cases import UseCases
-from .infra.ui.dialogs import main_dialog, start_router
-from .infra.ui.handlers import ui_error_handler
-from .middlewares import PresenterMiddleWare, UseCasesMiddleWare
+from custom.media_storage import MediaIdStorage
+from domain.use_cases import UseCases
+from infra.ui.dialogs import main_dialog, start_router
+from infra.ui.handlers import ui_error_handler
+from middlewares import PresenterMiddleWare, UseCasesMiddleWare
 
 logger = logging.getLogger(__name__)
 

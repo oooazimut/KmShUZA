@@ -5,7 +5,7 @@ from aiogram.types import CallbackQuery, ErrorEvent, Message
 from aiogram_dialog import DialogManager, StartMode
 
 from domain.entities import User
-from bot.domain.use_cases import UseCases
+from domain.use_cases import UseCases
 from config import settings
 from infra.presenter import ImageService
 

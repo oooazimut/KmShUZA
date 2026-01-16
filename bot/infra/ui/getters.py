@@ -2,7 +2,7 @@ from aiogram_dialog import DialogManager
 
 from infra.presenter import ImageService
 
-from bot.domain.use_cases import UseCases
+from domain.use_cases import UseCases
 
 
 async def curr_info_getter(dialog_manager: DialogManager, **kwargs):

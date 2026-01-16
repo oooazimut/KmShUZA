@@ -9,8 +9,8 @@ from aiogram_dialog.widgets.media import StaticMedia
 from aiogram_dialog.widgets.text import Const, Format
 
 from . import handlers as h
-from bot.custom.babel_calendar import CustomCalendar
-from bot.domain.use_cases import UseCases
+from custom.babel_calendar import CustomCalendar
+from domain.use_cases import UseCases
 from .getters import archive_getter, curr_info_getter
 from .states import MainSG
 

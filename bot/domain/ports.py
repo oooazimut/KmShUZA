@@ -1,16 +1,10 @@
 from datetime import date
-from typing import Dict, Iterable, List, Protocol
+from typing import Dict, List, Protocol
 
-from domain.entities import Pump, User, Uza
-
-
-class DataReceiver(Protocol):
-    async def receive(self) -> Dict[str, List[Pump | Uza]]: ...
-    def get_cache(self) -> Dict[str, List]: ...
+from domain.entities import Pump, User
 
 
 class PumpRepo(Protocol):
-    async def add_list(self, data: Iterable[Pump]): ...
     async def list_by_date(self, date: date) -> List[Pump]: ...
 
 
@@ -34,10 +28,6 @@ class UserRepo(Protocol):
 class InfoPresenter(Protocol):
     def present_curr_info(self, data: Dict[str, List]): ...
     def present_archive_info(self, data: list[Pump]): ...
-
-
-class CacheSetter(Protocol):
-    async def set(self, data): ...
 
 
 class CacheGetter(Protocol):

@@ -1,6 +1,6 @@
 from functools import lru_cache
 from pathlib import Path
-from typing import Dict, Iterable, List, Tuple
+from typing import Dict, List, Tuple
 
 import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
@@ -17,7 +17,7 @@ TRENDS_DIR = IMAGES_DIR / "trends"
 
 class Colors:
     ACTIVE = "#f3f3f3"
-    PASSIVE = "#888888"
+    PASSIVE = "#A8A8A8"
     VALUE = "#0000d7"
     BG = "#d5d5d5"
 
@@ -59,7 +59,7 @@ class ImageService:
         self._pump_drawer.draw_pumps_row(pumps, draw)
         bg.save(self._curr_info_image_path)
 
-    def present_archive_info(self, data: Iterable[Pump]):
+    def present_archive_info(self, data: List[Pump]):
         pumps = group_pumps_by_name(data)
         self._pump_plotter.plot_trends(pumps)
 
@@ -163,9 +163,9 @@ class PumpPlotter:
         date_format = mdates.DateFormatter("%H:%M")
         ax.xaxis.set_major_locator(mdates.HourLocator(interval=2))
         ax.xaxis.set_major_formatter(date_format)
-        plt.ylim(top=3)
+        plt.ylim(top=4)
         plt.legend()
-        plt.title(f"Насос: {pumps[0].name}")
+        plt.title(f"{pumps[0].timestamp.date()} Насос: {pumps[0].name}")
         plt.tight_layout()
         plt.savefig(TRENDS_DIR / f"{pumps[0].name}.png")
         plt.close()

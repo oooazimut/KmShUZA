@@ -1,4 +1,4 @@
-from ports import PumpRepo, Receiver
+from .ports import PumpRepo, Receiver
 
 from logger import OnceLogger
 
